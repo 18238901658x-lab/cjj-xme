@@ -49,8 +49,33 @@
     messageTimer=setTimeout(()=>document.querySelector('#pet-message').textContent='这只小猫，住在我们的宇宙里。',3500);
   };
   heart.onclick = () => { heart.classList.remove('reacted'); void heart.offsetWidth; heart.classList.add('reacted'); particles(heart); clearTimeout(heartTimer); heartTimer=setTimeout(()=>heart.classList.remove('reacted'),1800); };
-  document.querySelector('#cover-photo').onclick=()=>enterPlayer(photos,0,false);
-  document.querySelector('#couple-photo').onclick=()=>enterPlayer(photos,Math.max(0,photos.findIndex(photo=>photo.id==='sample-2')),false);
+  let homeSlot = null, homeTimer;
+  const frames = ['#cover-photo', '#couple-photo', '.orbit-photo-back'].map(selector => document.querySelector(selector));
+  function refreshHomePhotos() {
+    clearTimeout(homeTimer);
+    const nextSlot = HomePhotos.slot();
+    if (nextSlot !== homeSlot) {
+      homeSlot = nextSlot;
+      HomePhotos.choose(publishedPhotos).forEach((photo, index) => {
+        const target = frames[index], img = target.querySelector('img');
+        const preload = new Image();
+        preload.onload = () => {
+          if (homeSlot !== nextSlot) return;
+          img.src = photo.src; img.alt = photo.caption;
+          if (target.tagName === 'BUTTON') {
+            target.setAttribute('aria-label', `查看照片：${photo.caption}`);
+            target.onclick = () => enterPlayer(photos, Math.max(0, photos.findIndex(item => item.id === photo.id)), false);
+          }
+          if (!preference.matches && enabled) img.animate([{opacity:.3},{opacity:1}],{duration:650});
+        };
+        preload.src = photo.src;
+      });
+    }
+    homeTimer = setTimeout(refreshHomePhotos, HomePhotos.untilNext() + 50);
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshHomePhotos(); });
+  window.addEventListener('pageshow', refreshHomePhotos);
+  refreshHomePhotos();
   const angle = document.querySelector('#scene-angle');
   angle.oninput = () => { hero.style.setProperty('--manual-y',`${angle.value}deg`); angle.setAttribute('aria-valuetext',`${angle.value} 度`); };
   document.querySelector('#scene-reset').onclick = () => { angle.value='0'; angle.oninput(); };
