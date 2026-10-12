@@ -1,25 +1,22 @@
-# CJJ × XME 相册发布
+# CJJ × XME 相册
 
-## GitHub Pages
+源码仓库：https://github.com/18238901658x-lab/cjj-xme
+网站：https://18238901658x-lab.github.io/cjj-xme/
 
-将本项目推送到 GitHub 仓库的 `main` 分支，在 Settings → Pages → Build and deployment 中将 Source 设为 GitHub Actions。工作流会检查 JavaScript 并只发布 `dist/` 中的网页与照片。
+## 发布方式
 
-推送更新后，在 Actions 中等待 Publish album to GitHub Pages 成功，再打开 Pages 中显示的网址。
+main 分支保存完整源码；gh-pages 分支根目录保存 dist/ 的内容。
+GitHub Settings → Pages 的发布源为 gh-pages 分支、根目录。
+更新 main 不会直接更新网页；将新的 dist/ 内容同步到 gh-pages 后，GitHub Pages 自动发布。
+本次通过 GitHub 官方 CLI 与 Git Data API 上传，以避开本机 Git HTTPS 连接超时。
 
-## 替换为自己的照片
+## 替换照片
 
-1. 将压缩后的 JPG、PNG 或 WebP 文件放到 `dist/assets/`，建议使用简单英文文件名。
-2. 编辑 `dist/app.js` 开头的 `samples` 列表，填写图片路径、标题、日期和分类。每个 `id` 保持唯一。
-3. 首页的三个照片框直接引用 `dist/index.html` 中的图片路径，也可一起替换。
-4. 提交并推送到 `main`，等待自动发布完成。
+将图片放入 dist/assets/，编辑 dist/app.js 开头 samples 的路径、标题、日期和分类。首页照片框的路径在 dist/index.html 中。将更新同步到 gh-pages 即可发布。
 
-仓库中的照片会随网站公开展示。网页中的“添加照片”仅供当前浏览器本地预览，不会写入 GitHub、不会跨设备同步。本地上传内容、设置和浏览器数据库不包含在仓库中。
+仓库和网站均公开。当前是示例照片，标题日期不代表真实经历。网页“添加照片”只保存在当前浏览器，不会上传到仓库或跨设备同步。
 
-## 本地检查
+## 本地运行
 
-```sh
-npm run check
-npm start
-```
-
-本地访问 `http://127.0.0.1:4173/`。所有资源使用相对路径，可部署到 GitHub Pages 的仓库子路径。
+运行 npm run check 检查脚本；运行 npm start 后访问 http://127.0.0.1:4173/。
+当前视觉为奶油白、雾蓝、淡杏色的 CSS 3D 相册，包含动态小猫、心跳、轮播、分类与图片缩放。
