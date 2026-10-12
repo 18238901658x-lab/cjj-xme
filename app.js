@@ -1,12 +1,5 @@
 const $ = selector => document.querySelector(selector);
-const samples = [
-  {id:'sample-1',src:'assets/coast.jpg',caption:'湖边，暂停一下',date:'2026-05-20',category:'旅行'},
-  {id:'sample-2',src:'assets/couple.jpg',caption:'关于我们',date:'2026-06-01',category:'我们'},
-  {id:'sample-3',src:'assets/coffee.jpg',caption:'下午三点的咖啡',date:'2026-06-15',category:'日常'},
-  {id:'sample-4',src:'assets/mountain.jpg',caption:'走进山里',date:'2026-07-12',category:'旅行'},
-  {id:'sample-5',src:'assets/city.jpg',caption:'入夜之后',date:'2026-08-08',category:'旅行'},
-  {id:'sample-6',src:'assets/sunset.jpg',caption:'落日余温',date:'2026-09-21',category:'日常'}
-];
+const samples = publishedPhotos;
 let photos = [...samples], filter = '全部', activeIndex = 0, toastTimer;
 const visiblePhotos = () => photos.filter(p => filter === '全部' || p.category === filter);
 function toast(message) { $('#toast').textContent = message; $('#toast').classList.add('visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('#toast').classList.remove('visible'),3500); }
@@ -257,4 +250,4 @@ $('#upload-form').onsubmit = async event => {
 const observer = new IntersectionObserver(entries => { entries.forEach(entry => { if(entry.isIntersecting) document.querySelectorAll('nav a').forEach(a => a.classList.toggle('active', a.hash === '#' + entry.target.id)); }); },{rootMargin:'-15% 0px -60% 0px'});
 ['home','album','story'].forEach(id => observer.observe(document.getElementById(id)));
 renderSettings(); render();
-readPhotos().then(records => { photos = [...records.sort((a,b) => b.createdAt - a.createdAt).map(record => ({...record,src:URL.createObjectURL(record.blob)})),...samples]; render(); }).catch(() => toast('浏览器照片存储暂不可用，仍可浏览示例相册'));
+readPhotos().then(records => { photos = [...records.sort((a,b) => b.createdAt - a.createdAt).map(record => ({...record,src:URL.createObjectURL(record.blob)})),...samples]; render(); }).catch(() => toast('浏览器照片存储暂不可用，仍可浏览已发布相册'));
